@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"github.com/aditansh/blendnet-task/be/services"
 	"github.com/aditansh/blendnet-task/be/utils"
 	"github.com/gofiber/fiber/v2"
 )
@@ -77,29 +78,6 @@ func VerifyToken(c *fiber.Ctx) error {
 	}
 
 	c.Locals("Email", email)
-
-	return c.Next()
-}
-
-// VerifyVendorToken verifies the vendor token
-func VerifyVendorToken(c *fiber.Ctx) error {
-	email, err := utils.VerifyToken(c)
-	if err != nil {
-		return c.Status(err.Code).JSON(fiber.Map{
-			"status":  false,
-			"message": err.Message,
-		})
-	}
-
-	vendor, errr := services.GetVendorByEmail(email)
-	if errr != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"status":  false,
-			"message": err.Error(),
-		})
-	}
-
-	c.Locals("ID", vendor.ID)
 
 	return c.Next()
 }

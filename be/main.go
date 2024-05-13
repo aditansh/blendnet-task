@@ -6,6 +6,7 @@ import (
 
 	"github.com/aditansh/blendnet-task/be/config"
 	"github.com/aditansh/blendnet-task/be/database"
+	"github.com/aditansh/blendnet-task/be/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -38,7 +39,7 @@ func main() {
 		})
 	})
 
-	// routes.SetupRoutes(app)
+	routes.SetupRoutes(app)
 
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{
