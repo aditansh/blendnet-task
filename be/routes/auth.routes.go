@@ -10,10 +10,11 @@ func AuthRoutes(app *fiber.App) {
 
 	auth := app.Group("/auth")
 
+	auth.Post("/register", controllers.RegisterUser)
 	auth.Post("/login", controllers.Login)
 	auth.Post("/refresh", controllers.RefreshToken)
 
-	auth.Post("/updatepassword", middleware.VerifyToken, controllers.UpdatePassword)
+	auth.Put("/updatepassword", middleware.VerifyToken, controllers.UpdatePassword)
 	auth.Post("/logout", middleware.VerifyToken, controllers.Logout)
-	auth.Get("/delete", middleware.VerifyToken, controllers.DeleteAccount)
+	auth.Delete("/delete", middleware.VerifyToken, controllers.DeleteAccount)
 }

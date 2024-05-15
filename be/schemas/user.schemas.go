@@ -12,4 +12,9 @@ type UpdateUserSchema struct {
 
 type UpdateWatchlistSchema struct {
 	Watchlist []string `json:"watchlist" validate:"required"`
+	Method   string   `json:"method" validate:"required,oneof=add delete"`
+}
+
+type SearchSchema struct {
+	Key string `json:"key" validate:"required"`
 }

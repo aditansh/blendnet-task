@@ -18,6 +18,7 @@ type Config struct {
 	AccessTokenExpiry  time.Duration `mapstructure:"ACCESS_TOKEN_EXPIRY"`
 	RefreshTokenExpiry time.Duration `mapstructure:"REFRESH_TOKEN_EXPIRY"`
 	ClientOrigin       string        `mapstructure:"CLIENT_ORIGIN"`
+	APIKey             string        `mapstructure:"API_KEY"`
 }
 
 func LoadEnvVariables(path string) (config Config, err error) {

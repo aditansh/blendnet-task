@@ -17,3 +17,12 @@ func StringInSlice(str string, slice []string) bool {
 	}
 	return false
 }
+
+func RemoveElement(slice []string, element string) []string {
+	for i, e := range slice {
+		if e == element {
+			return append(slice[:i], slice[i+1:]...)
+		}
+	}
+	return slice
+}

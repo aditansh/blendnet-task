@@ -93,22 +93,37 @@ func UpdateUserName(payload *schemas.UpdateUserSchema, ID uuid.UUID) *fiber.Erro
 	return nil
 }
 
-func UpdateUserWatchlist(payload *schemas.UpdateWatchlistSchema, ID uuid.UUID) *fiber.Error {
+func UpdateWatchlist(payload *schemas.UpdateWatchlistSchema, ID uuid.UUID) ([]string, *fiber.Error) {
 	user, err := GetUserByID(ID)
 	if err != nil {
-		return fiber.NewError(fiber.StatusNotFound, err.Error())
+		return nil, fiber.NewError(fiber.StatusNotFound, err.Error())
+	}
+
+	old := user.Watchlist
+	if payload.Method == "add" {
+		for _, element := range payload.Watchlist {
+			old = utils.AppendUnique(old, element)
+		}
+	} else if payload.Method == "delete" {
+		for _, element := range payload.Watchlist {
+			if utils.StringInSlice(element, old) {
+				old = utils.RemoveElement(old, element)
+			}
+		}
+	} else {
+		return nil, fiber.NewError(fiber.StatusBadRequest, "Invalid method")
 	}
 
 	updates := make(map[string]interface{})
-	updates["watchlist"] = payload.Watchlist
+	updates["watchlist"] = old
 	updates["updated_at"] = time.Now()
 
 	result := database.DB.Model(&user).Updates(updates)
 	if result.Error != nil {
-		return fiber.NewError(fiber.StatusInternalServerError, "Error updating user")
+		return nil, fiber.NewError(fiber.StatusInternalServerError, "Error updating user")
 	}
 
-	return nil
+	return user.Watchlist, nil
 }
 
 func UpdateRole(user *models.User, role string) *fiber.Error {

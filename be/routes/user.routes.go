@@ -9,8 +9,9 @@ import (
 func UserRoutes(app *fiber.App) {
 
 	user := app.Group("/user")
-	user.Post("/register", controllers.RegisterUser)
 
-	user.Post("/update", middleware.VerifyUserToken, controllers.UpdateUser)
+	user.Post("/search",  middleware.VerifyUserToken, controllers.Search)
+	user.Put("/update", middleware.VerifyUserToken, controllers.UpdateUser)
+	user.Patch("/watchlist", middleware.VerifyUserToken, controllers.UpdateUserWatchlist)
 	user.Get("/me", middleware.VerifyUserToken, controllers.GetUserProfile)
 }

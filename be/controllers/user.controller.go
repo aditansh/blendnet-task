@@ -41,68 +41,28 @@ func RegisterUser(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
+	var payload schemas.UpdateUserSchema
 	var ID *uuid.UUID
-	var err *fiber.Error
 
 	temp := c.Locals("ID").(uuid.UUID)
 	ID = &temp
 
-	if c.Query("type") == "watchlist" {
-		var payload schemas.UpdateWatchlistSchema
-
-		if err := c.BodyParser(&payload); err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"status":  false,
-				"message": err.Error(),
-			})
-		}
-
-		errors := utils.ValidateStruct(payload)
-		if errors != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"status": false,
-				"errors": errors,
-			})
-		}
-
-		err := services.UpdateUserWatchlist(&payload, *ID)
-		if err != nil {
-			return c.Status(err.Code).JSON(fiber.Map{
-				"status":  false,
-				"message": err.Message,
-			})
-		}
-
-	} else if c.Query("type") == "profile" {
-		var payload schemas.UpdateUserSchema
-
-		if err := c.BodyParser(&payload); err != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"status":  false,
-				"message": err.Error(),
-			})
-		}
-
-		errors := utils.ValidateStruct(payload)
-		if errors != nil {
-			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-				"status": false,
-				"errors": errors,
-			})
-		}
-
-		err := services.UpdateUserName(&payload, *ID)
-		if err != nil {
-			return c.Status(err.Code).JSON(fiber.Map{
-				"status":  false,
-				"message": err.Message,
-			})
-		}
-
-	} else {
-		err = fiber.NewError(fiber.StatusBadRequest, "Invalid query type")
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  false,
+			"message": err.Error(),
+		})
 	}
 
+	errors := utils.ValidateStruct(payload)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": false,
+			"errors": errors,
+		})
+	}
+
+	err := services.UpdateUserName(&payload, *ID)
 	if err != nil {
 		return c.Status(err.Code).JSON(fiber.Map{
 			"status":  false,
@@ -113,6 +73,75 @@ func UpdateUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status":  true,
 		"message": "User updated successfully",
+	})
+}
+
+func Search(c *fiber.Ctx) error {
+	var payload schemas.SearchSchema
+
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  false,
+			"message": err.Error(),
+		})
+	}
+
+	errors := utils.ValidateStruct(payload)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": false,
+			"errors": errors,
+		})
+	}
+
+	stocks, err := services.SearchStocks(&payload)
+	if err != nil {
+		return c.Status(err.Code).JSON(fiber.Map{
+			"status":  false,
+			"message": err.Message,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": true,
+		"data":   stocks,
+	})
+}
+
+func UpdateUserWatchlist(c *fiber.Ctx) error {
+	var payload schemas.UpdateWatchlistSchema
+	var ID *uuid.UUID
+
+	temp := c.Locals("ID").(uuid.UUID)
+	ID = &temp
+
+	if err := c.BodyParser(&payload); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  false,
+			"message": err.Error(),
+		})
+	}
+
+	errors := utils.ValidateStruct(payload)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status": false,
+			"errors": errors,
+		})
+	}
+
+	data, err := services.UpdateWatchlist(&payload, *ID)
+	if err != nil {
+		return c.Status(err.Code).JSON(fiber.Map{
+			"status":  false,
+			"message": err.Message,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  true,
+		"message": "Watchlist updated successfully",
+		"data":    data,
 	})
 }
 
