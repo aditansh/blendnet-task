@@ -22,7 +22,7 @@
 1. Create a `.env` file in the root directory and add the following environment variables:
 
 ```bash
-POSTGRES_HOST=postgre
+POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
 POSTGRES_USER=postgres
 POSTGRES_PASSWORD=admin

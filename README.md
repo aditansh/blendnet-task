@@ -7,9 +7,7 @@ A basic full stack CRUD with 3rd party API integration.
 ## Table of Contents
 
 - [Installation](#installation)
-- [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 
 ## Installation
 
