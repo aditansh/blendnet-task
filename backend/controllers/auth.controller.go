@@ -41,7 +41,7 @@ func Login(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status":  true,
 		"message": "Login successful",
-		"token":   token,
+		"data":   token,
 	})
 }
 
@@ -108,7 +108,7 @@ func RefreshToken(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"status":  true,
 		"message": "Token refreshed successfully",
-		"token":   token,
+		"data":   token,
 	})
 }
 

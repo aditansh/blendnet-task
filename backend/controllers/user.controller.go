@@ -108,6 +108,38 @@ func Search(c *fiber.Ctx) error {
 	})
 }
 
+func GetStock(c *fiber.Ctx) error {
+	key := c.Query("symbol")
+	interval := c.Query("interval")
+
+	if key == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  false,
+			"message": "symbol is required",
+		})
+	}
+
+	if interval == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  false,
+			"message": "interval is required",
+		})
+	}
+
+	stock, err := services.GetStock(key,interval)
+	if err != nil {
+		return c.Status(err.Code).JSON(fiber.Map{
+			"status":  false,
+			"message": err.Message,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": true,
+		"data":   stock,
+	})
+}
+
 func UpdateUserWatchlist(c *fiber.Ctx) error {
 	var payload schemas.UpdateWatchlistSchema
 	var ID *uuid.UUID
