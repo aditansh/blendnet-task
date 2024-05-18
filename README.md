@@ -1,5 +1,3 @@
-# Blendnet Task
-
 ## Description
 
 A basic full stack CRUD with 3rd party API integration.
